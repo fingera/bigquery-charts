@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>
+<script type="text/javascript" src="./js/Chart.min.js"></script>
+<script type="text/javascript" src="./js/request.js"></script>
+</head>
+<body>
+<canvas id="eth_daliy_chart"></canvas>
+<script>
+
+var chartColors = {
+  red: 'rgb(255, 99, 132)',
+  orange: 'rgb(255, 159, 64)',
+  yellow: 'rgb(255, 205, 86)',
+  green: 'rgb(75, 192, 192)',
+  blue: 'rgb(54, 162, 235)',
+  purple: 'rgb(153, 102, 255)',
+  grey: 'rgb(201, 203, 207)'
+};
+
+function load(res) {
+  var sum_tx_ether = [];
+  var sum_tx_gas = [];
+  var avg_tx_ether = [];
+  var avg_tx_gas = [];
+  var count_tx = [];
+  var tx_date = [];
+  res[0].forEach(function (element) {
+      sum_tx_ether.push(element.sum_tx_ether);
+      sum_tx_gas.push(element.sum_tx_gas);
+      avg_tx_ether.push(element.avg_tx_ether);
+      avg_tx_gas.push(element.avg_tx_gas);
+      count_tx.push(element.count_tx);
+      tx_date.push(element.tx_date.value);
+  });
+  new Chart(document.getElementById("eth_daliy_chart").getContext('2d'), {
+      type: 'line',
+      data: {
+          labels: tx_date,
+          datasets: [{
+              label: '交易额<eth>',
+              backgroundColor: chartColors.red,
+              borderColor: chartColors.red,
+              data: sum_tx_ether,
+              fill: false,
+          }, {
+              label: '手续费<eth>',
+              backgroundColor: chartColors.orange,
+              borderColor: chartColors.orange,
+              data: sum_tx_gas,
+              fill: false,
+          }, {
+              label: '平均单笔交易额<eth>',
+              backgroundColor: chartColors.yellow,
+              borderColor: chartColors.yellow,
+              data: avg_tx_ether,
+              fill: false,
+          }, {
+              label: '平均单笔手续费<eth>',
+              backgroundColor: chartColors.green,
+              borderColor: chartColors.green,
+              data: avg_tx_gas,
+              fill: false,
+          }, {
+              label: 'ETH交易数量<笔>',
+              backgroundColor: chartColors.blue,
+              borderColor: chartColors.blue,
+              data: count_tx,
+              fill: false,
+          }]
+      },
+      options: {
+          responsive: true,
+          hoverMode: 'index',
+          stacked: false,
+          title: {
+              display: true,
+              text: '以太坊日报'
+          },
+          scales: {
+              yAxes: [{
+                  type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                  display: true,
+                  position: 'left',
+                  id: 'y-axis-1',
+              }, {
+                  type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                  display: true,
+                  position: 'right',
+                  id: 'y-axis-2',
+
+                  // grid line settings
+                  gridLines: {
+                      drawOnChartArea: false, // only want the grid lines for one axis to show up
+                  },
+              }],
+          }
+      }
+  });
+}
+
+request("/eth-daliy", {}, function (err, res) {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    if (res) {
+        load(res);
+    } else {
+        console.error("Bad Data");
+    }
+});
+
+</script>
+
+</body>
+</html>

@@ -3,12 +3,21 @@ const express = require("express");
 const app = express();
 
 const allCharts = [
-  "demo"
+  "demo",
+  "eth-daliy",
 ];
 
 app.use("/", express.static(__dirname + "/static"));
 
 app.use(express.json());
+
+/*
+require("./func/eth-daliy.js")().then((result) => {
+  console.log(result);
+}).catch((err) => {
+  console.error(err);
+});
+*/
 
 for (let chart of allCharts) {
   const func = require(`./func/${chart}.js`);

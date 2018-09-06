@@ -15,7 +15,7 @@ function load(res) {
     res[0].forEach(function (element) {
         arr.push(element.avg_tx_gas_cost);
         lab.push(element.tx_date.value);
-        arr2.push((element.sum_tx_ether / 25000000) * 0.007);
+        arr2.push(element.sum_tx_ether);
     });
     new Chart(document.getElementById("demo_chart").getContext('2d'), {
         type: 'line',
