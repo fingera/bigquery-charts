@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+<script type="text/javascript" src="./js/Chart.min.js"></script>
+<script type="text/javascript" src="./js/request.js"></script>
+</head>
+<body>
+<canvas id="demo_chart"></canvas>
+<script>
+
+function load(res) {
+    var arr = [];
+    var lab = [];
+    var arr2 = [];
+    res[0].forEach(function (element) {
+        arr.push(element.avg_tx_gas_cost);
+        lab.push(element.tx_date.value);
+        arr2.push((element.sum_tx_ether / 25000000) * 0.007);
+    });
+    new Chart(document.getElementById("demo_chart").getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: lab,
+            datasets: [{
+                label: 'avg_tx_gas_cost',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: arr,
+                fill: false,
+            }, {
+                label: 'sum_tx_ether',
+                backgroundColor: 'rgb(54, 162, 235)',
+                borderColor: 'rgb(54, 162, 235)',
+                data: arr2,
+                fill: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'index',
+            stacked: false,
+            title: {
+                display: true,
+                text: 'demo'
+            },
+            scales: {
+                yAxes: [{
+                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                    display: true,
+                    position: 'left',
+                    id: 'y-axis-1',
+                }, {
+                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                    display: true,
+                    position: 'right',
+                    id: 'y-axis-2',
+
+                    // grid line settings
+                    gridLines: {
+                        drawOnChartArea: false, // only want the grid lines for one axis to show up
+                    },
+                }],
+            }
+        }
+    });
+}
+
+request("/demo", {}, function (err, res) {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    if (res) {
+        load(res);
+    } else {
+        console.error("Bad Data");
+    }
+});
+
+</script>
+
+</body>
+</html>
