@@ -3,19 +3,16 @@ const query = require("./query.js");
 
 const sql = `
 SELECT 
-  SUM(value/POWER(10,18)) AS sum_tx_ether,
-  AVG(gas_price*(receipt_gas_used/POWER(10,18))) AS avg_tx_gas_cost,
-  DATE(timestamp) AS tx_date
+TIMESTAMP_TRUNC(transactions.block_timestamp, MINUTE) AS seconds, COUNT(transactions.to_address) AS count, SUM(transactions.value/POWER(10,18)) as value
 FROM
-  \`bigquery-public-data.ethereum_blockchain.transactions\` AS transactions,
-  \`bigquery-public-data.ethereum_blockchain.blocks\` AS blocks
+\`bigquery-public-data.ethereum_blockchain.transactions\` AS transactions
 WHERE TRUE
-  AND transactions.block_number = blocks.number
-  AND receipt_status = 1
-  AND value > 0
-GROUP BY tx_date
-HAVING tx_date >= '2018-01-01' AND tx_date <= '2018-12-31'
-ORDER BY tx_date
+AND DATE(transactions.block_timestamp) = "2018-08-22"
+AND TIMESTAMP_TRUNC(transactions.block_timestamp, HOUR) = "2018-08-22 07:00:00"
+AND transactions.to_address = "0xa62142888aba8370742be823c1782d17a0389da1"
+AND transactions.value > 0
+GROUP BY seconds
+ORDER BY seconds
 `;
 
 function demo(request) {

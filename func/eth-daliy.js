@@ -10,7 +10,7 @@
 const query = require("./query.js");
 
 function eth_daliy_query(request) {
-  let start = "2018-09-01";
+  let start = "2018-01-01";
   let end = "2018-12-31";
   if (request && request.start) {
     start = request.start;

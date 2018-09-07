@@ -9,29 +9,29 @@
 <script>
 
 function load(res) {
-    var arr = [];
-    var lab = [];
-    var arr2 = [];
+    var seconds = [];
+    var count = [];
+    var value = [];
     res[0].forEach(function (element) {
-        arr.push(element.avg_tx_gas_cost);
-        lab.push(element.tx_date.value);
-        arr2.push(element.sum_tx_ether);
+        seconds.push(element.seconds.value);
+        count.push(element.count);
+        value.push(element.value);
     });
     new Chart(document.getElementById("demo_chart").getContext('2d'), {
         type: 'line',
         data: {
-            labels: lab,
+            labels: seconds,
             datasets: [{
-                label: 'avg_tx_gas_cost',
+                label: '交易数',
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: arr,
+                data: count,
                 fill: false,
             }, {
-                label: 'sum_tx_ether',
+                label: '交易额',
                 backgroundColor: 'rgb(54, 162, 235)',
                 borderColor: 'rgb(54, 162, 235)',
-                data: arr2,
+                data: value,
                 fill: false,
             }]
         },
